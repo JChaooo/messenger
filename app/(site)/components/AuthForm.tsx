@@ -62,7 +62,16 @@ const AuthForm = () => {
     const socialAction = (action: string) => {
         setIsLoading(true);
 
-        // NextAuth Social Sign In
+        signIn(action, { redirect: false })
+            .then((callback) => {
+                if (callback?.error) {
+                    toast.error('登录失败~')
+                }
+                if (callback?.ok && !callback?.error) {
+                    toast.success('登录成功！')
+                }
+            })
+            .finally(() => setIsLoading(false))
     }
 
     return <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
