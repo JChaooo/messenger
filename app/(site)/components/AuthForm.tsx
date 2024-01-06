@@ -6,6 +6,10 @@ import { useCallback, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import AuthSocialButton from "./AuthSocialButton";
 import { BsGithub, BsGoogle } from "react-icons/bs";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { signIn } from "next-auth/react";
+import { redirect } from "next/dist/server/api-utils";
 
 const AuthForm = () => {
     type Variant = "LOGIN" | "REGISTER";
@@ -36,11 +40,22 @@ const AuthForm = () => {
         setIsLoading(true);
 
         if (variant === 'REGISTER') {
-            // Axios Register
+            axios.post('/api/register', data)
+                .catch(() => toast.error('发生了一些错误~'))
+                .finally(() => setIsLoading(false))
         }
 
         if (variant === 'LOGIN') {
-            // NextAuth SignIn
+            signIn('credentials', { ...data, redirect: false })
+                .then((callback) => {
+                    if (callback?.error) {
+                        toast.error('账户名或密码错误~')
+                    }
+                    if (callback?.ok && !callback?.error) {
+                        toast.success('登录成功！')
+                    }
+                })
+                .finally(() => setIsLoading(false))
         }
     }
 

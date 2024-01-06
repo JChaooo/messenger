@@ -1,0 +1,164 @@
+// // This is your Prisma schema file,
+// // learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// generator client {
+//   provider = "prisma-client-js"
+// }
+
+// datasource db {
+//   provider = "mongodb"
+//   url      = env("DATABASE_URL")
+// }
+
+// model User {
+//   id              String @id @default(auto()) @map("_id") @db.ObjectId
+//   name            String?
+//   email           String?   @unique
+//   emailVerified   DateTime?
+//   image           String?
+//   hashedPassword  String?
+//   createdAt       DateTime @default(now())
+//   updatedAt       DateTime @updatedAt
+
+//   conversationIds String[] @db.ObjectId
+//   conversations Conversation[] @relation(fields: [conversationIds], references: [id])
+  
+//   seenMessageIds String[] @db.ObjectId
+//   seenMessages Message[] @relation("Seen", fields: [seenMessageIds], references: [id])
+
+//   accounts Account[]
+//   messages Message[]
+// }
+
+// model Account {
+//   id String @id @default(auto()) @map("_id") @db.ObjectId
+//   userId             String   @db.ObjectId
+//   type               String
+//   provider           String
+//   providerAccountId  String
+//   refresh_token      String?  @db.String
+//   access_token       String?  @db.String
+//   expires_at         Int?
+//   token_type         String?
+//   scope              String?
+//   id_token           String?  @db.String
+//   session_state      String?
+
+//   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+//   @@unique([provider, providerAccountId])
+// }
+
+// model Conversation {
+//   id String @id @default(auto()) @map("_id") @db.ObjectId
+//   createdAt       DateTime @default(now())
+//   lastMessageAt DateTime @default(now())
+//   name String?
+//   isGroup Boolean?
+  
+//   messagesIds String[] @db.ObjectId
+//   messages Message[]
+
+//   userIds String[] @db.ObjectId
+//   users User[] @relation(fields: [userIds], references: [id])
+// }
+
+// model Message {
+//   id String @id @default(auto()) @map("_id") @db.ObjectId
+//   body String?
+//   image String?
+//   createdAt DateTime @default(now())
+
+//   seenIds String[] @db.ObjectId
+//   seen User[] @relation("Seen", fields: [seenIds], references: [id])
+
+//   conversationId String @db.ObjectId
+//   conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  
+//   senderId String @db.ObjectId
+//   sender User @relation(fields: [senderId], references: [id], onDelete: Cascade)
+// }
+
+// 代码生成器的配置块
+generator client {
+  provider = "prisma-client-js" // 指定 "prisma-client-js" 作为代码生成器提供程序
+}
+
+// 数据源的配置块
+datasource db {
+  provider = "mongodb" // 指定 "mongodb" 作为数据库提供程序
+  url      = env("DATABASE_URL") // 从环境变量 "DATABASE_URL" 中获取数据库连接 URL
+}
+
+// "User" 模型的定义
+model User {
+  id              String @id @default(auto()) @map("_id") @db.ObjectId // 将 "id" 字段定义为带有自动生成的唯一标识符 (ObjectId) 的主键
+  name            String? // 定义可选的 "name" 字段，类型为字符串
+  email           String?   @unique // 定义可选的 "email" 字段，类型为字符串，并且是唯一的
+  emailVerified   DateTime? // 定义可选的 "emailVerified" 字段，类型为日期时间
+  image           String? // 定义可选的 "image" 字段，类型为字符串
+  hashedPassword  String? // 定义可选的 "hashedPassword" 字段，类型为字符串
+  createdAt       DateTime @default(now()) // 定义 "createdAt" 字段，类型为日期时间，并具有当前日期和时间的默认值
+  updatedAt       DateTime @updatedAt // 定义 "updatedAt" 字段，类型为日期时间，会自动更新
+
+  conversationIds String[] @db.ObjectId // 将 "conversationIds" 字段定义为 ObjectId 数组
+  conversations Conversation[] @relation(fields: [conversationIds], references: [id]) // 根据 "conversationIds" 字段，将 "conversations" 字段定义为对 Conversation 模型的关联
+
+  seenMessageIds String[] @db.ObjectId // 将 "seenMessageIds" 字段定义为 ObjectId 数组
+  seenMessages Message[] @relation("Seen", fields: [seenMessageIds], references: [id]) // 根据 "seenMessageIds" 字段，将 "seenMessages" 字段定义为对 Message 模型的关联
+
+  accounts Account[] // 将 "accounts" 字段定义为对 Account 模型的关联
+  messages Message[] // 将 "messages" 字段定义为对 Message 模型的关联
+}
+
+// "Account" 模型的定义
+model Account {
+  id String @id @default(auto()) @map("_id") @db.ObjectId // 将 "id" 字段定义为带有自动生成的唯一标识符 (ObjectId) 的主键
+  userId             String   @db.ObjectId // 将 "userId" 字段定义为字符串类型的 ObjectId
+  type               String // 将 "type" 字段定义为字符串类型
+  provider           String // 将 "provider" 字段定义为字符串类型
+  providerAccountId  String // 将 "providerAccountId" 字段定义为字符串类型
+  refresh_token      String?  @db.String // 将 "refresh_token" 字段定义为可选的字符串类型
+  access_token       String?  @db.String // 将 "access_token" 字段定义为可选的字符串类型
+  expires_at         Int? // 将 "expires_at" 字段定义为可选的整数类型
+  token_type         String? // 将 "token_type" 字段定义为可选的字符串类型
+  scope              String? // 将 "scope" 字段定义为可选的字符串类型
+  id_token           String?  @db.String // 将 "id_token" 字段定义为可选的字符串类型
+  session_state      String? // 将 "session_state" 字段定义为可选的字符串类型
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade) // 根据 "userId" 字段，将 "user" 字段定义为对 User 模型的关联
+
+  @@unique([provider, providerAccountId]) // 定义 "provider" 和 "providerAccountId" 组合的唯一约束
+}
+
+// "Conversation" 模型的定义
+model Conversation {
+  id String @id @default(auto()) @map("_id") @db.ObjectId // 将 "id" 字段定义为带有自动生成的唯一标识符 (ObjectId) 的主键
+  createdAt       DateTime @default(now()) // 定义 "createdAt" 字段，类型为日期时间，并具有当前日期和时间的默认值
+  lastMessageAt DateTime @default(now()) // 定义 "lastMessageAt" 字段，类型为日期时间，并具有当前日期和时间的默认值
+  name String? // 定义可选的 "name" 字段，类型为字符串
+  isGroup Boolean? // 定义可选的 "isGroup" 字段，类型为布尔值
+
+  messagesIds String[] @db.ObjectId // 将 "messagesIds" 字段定义为 ObjectId 数组
+  messages Message[] // 根据 "messagesIds" 字段，将 "messages" 字段定义为对 Message 模型的关联
+
+  userIds String[] @db.ObjectId // 将 "userIds" 字段定义为 ObjectId 数组
+  users User[] @relation(fields: [userIds], references: [id]) // 根据 "userIds" 字段，将 "users" 字段定义为对 User 模型的关联
+}
+
+// "Message" 模型的定义
+model Message {
+  id String @id @default(auto()) @map("_id") @db.ObjectId // 将 "id" 字段定义为带有自动生成的唯一标识符 (ObjectId) 的主键
+  body String? // 定义可选的 "body" 字段，类型为字符串
+  image String? // 定义可选的 "image" 字段，类型为字符串
+  createdAt DateTime @default(now()) // 定义 "createdAt" 字段，类型为日期时间，并具有当前日期和时间的默认值
+
+  seenIds String[] @db.ObjectId // 将 "seenIds" 字段定义为 ObjectId 数组
+  seen User[] @relation("Seen", fields: [seenIds], references: [id]) // 根据 "seenIds" 字段，将 "seen" 字段定义为对 User 模型的关联
+
+  conversationId String @db.ObjectId // 将 "conversationId" 字段定义为字符串类型的 ObjectId
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade) // 根据 "conversationId" 字段，将 "conversation" 字段定义为对 Conversation 模型的关联
+
+  senderId String @db.ObjectId // 将 "senderId" 字段定义为字符串类型的 ObjectId
+  sender User @relation(fields: [senderId], references: [id], onDelete: Cascade) // 根据 "senderId" 字段，将 "sender" 字段定义为对 User 模型的关联
+}
